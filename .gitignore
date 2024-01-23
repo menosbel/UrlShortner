@@ -1,0 +1,19 @@
+.idea/
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+### Gradle ###
+build/
+.gradle/
+gradle/
+
+# Folder config file
+[Dd]esktop.ini
