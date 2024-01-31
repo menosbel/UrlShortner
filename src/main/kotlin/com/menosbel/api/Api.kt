@@ -1,5 +1,6 @@
-import Controllers.HelloWorldController
-import Controllers.UrlController
+package com.menosbel.api
+
+import com.menosbel.controllers.UrlController
 import io.javalin.Javalin
 
 class Api {
@@ -12,7 +13,6 @@ class Api {
     }
 
     private fun registerControllers() {
-        HelloWorldController(httpServer)
         UrlController(httpServer)
     }
 
