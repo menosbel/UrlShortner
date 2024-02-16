@@ -1,9 +1,10 @@
 package com.menosbel.api
 
+import com.menosbel.api.configuration.ApiConfiguration
 import com.menosbel.controllers.UrlController
 import io.javalin.Javalin
 
-class Api {
+class Api(private val config: ApiConfiguration) {
     private val httpServer = Javalin.create() { config ->
         config.showJavalinBanner = false
     }
@@ -13,11 +14,11 @@ class Api {
     }
 
     private fun registerControllers() {
-        UrlController(httpServer)
+        UrlController(httpServer, config.useCaseProvider)
     }
 
     fun start() {
-        httpServer.start()
+        httpServer.start(config.port)
     }
 
     fun stop() {
