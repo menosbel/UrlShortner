@@ -1,6 +1,6 @@
 package com.menosbel
 
-import com.menosbel.core.domain.Clock
+import com.menosbel.core.infrastructure.clock.Clock
 import java.time.LocalDateTime
 
 class StoppedClock private constructor (private val now: LocalDateTime): Clock {

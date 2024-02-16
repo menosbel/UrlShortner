@@ -1,4 +1,4 @@
-package com.menosbel.core.domain
+package com.menosbel.core.infrastructure.clock
 
 import java.time.LocalDateTime
 
