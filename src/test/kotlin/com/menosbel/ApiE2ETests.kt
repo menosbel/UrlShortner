@@ -4,6 +4,7 @@ import com.eclipsesource.json.JsonObject
 import com.menosbel.api.*
 import com.menosbel.api.configuration.ApiConfiguration
 import com.menosbel.api.configuration.CoreConfiguration
+import com.menosbel.core.infrastructure.InMemoryRepositoryProvider
 import com.menosbel.core.infrastructure.UseCaseProvider
 import com.menosbel.lang.formatAsISO8601
 import io.restassured.RestAssured
@@ -24,7 +25,8 @@ class ApiE2ETests {
     private val coreConfiguration = CoreConfiguration(stoppedClock)
     private val port = 8080
     private val baseUrl = "http://localhost/"
-    private val useCaseProvider = UseCaseProvider(coreConfiguration, baseUrl)
+    private val repositoryProvider = InMemoryRepositoryProvider()
+    private val useCaseProvider = UseCaseProvider(coreConfiguration, baseUrl, repositoryProvider)
     private val apiConfiguration = ApiConfiguration(useCaseProvider, port)
     private val api = Api(apiConfiguration)
 
