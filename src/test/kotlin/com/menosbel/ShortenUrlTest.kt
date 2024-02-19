@@ -4,7 +4,6 @@ import com.menosbel.core.application.ShortenUrl
 import com.menosbel.core.domain.UrlInfoInMemoryRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 class ShortenUrlTest {
     private val baseUrl = "https://someurl.com/"
