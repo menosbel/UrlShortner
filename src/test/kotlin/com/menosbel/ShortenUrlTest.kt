@@ -8,10 +8,8 @@ import java.time.LocalDateTime
 
 class ShortenUrlTest {
     private val baseUrl = "https://someurl.com/"
-    private val NOW = LocalDateTime.of(2021, 8, 18, 17, 35, 15)
-    private val clock = StoppedClock.at(NOW)
     private val repository= UrlInfoInMemoryRepository()
-    private val shortenUrl = ShortenUrl(clock, baseUrl, repository)
+    private val shortenUrl = ShortenUrl(baseUrl, repository)
 
     @Test
     fun `should return shortened url info`() {

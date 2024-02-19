@@ -60,7 +60,6 @@ class ApiE2ETests {
             body("longUrl", equalTo(url))
             body("shortUrl", containsString(RestAssured.baseURI))
             body("key", Matchers.hasLength(8))
-            body("createdAt", equalTo(NOW.formatAsISO8601()))
         }
 
     }
