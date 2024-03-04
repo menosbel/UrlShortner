@@ -2,7 +2,8 @@ package com.menosbel
 
 import com.menosbel.core.application.RedirectToUrl
 import com.menosbel.core.domain.UrlInfo
-import com.menosbel.core.domain.UrlInfoInMemoryRepository
+import com.menosbel.core.infrastructure.UrlInfoInMemoryRepository
+import com.menosbel.core.domain.UrlInfoNotFoundError
 import org.junit.jupiter.api.Test
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.assertThrows

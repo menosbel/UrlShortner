@@ -22,6 +22,6 @@ class Api(private val config: ApiConfiguration) {
     }
 
     fun stop() {
-        httpServer.stop()
+        httpServer.close()
     }
 }
