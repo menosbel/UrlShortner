@@ -11,6 +11,7 @@ import io.restassured.config.RedirectConfig
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
+import io.restassured.parsing.Parser
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Matchers
@@ -85,13 +86,13 @@ class ApiE2ETests {
     fun `should fail if key is not found`() {
         val someKey = "kYhNk6aH"
 
+            RestAssured.registerParser("text/plain", Parser.TEXT)
+
         When {
-
-         get("/${someKey}")
+            get("/${someKey}")
         } Then {
-            val errorMessage = extract().response()
             statusCode(404)
+            body(equalTo("Url not found"))
         }
-
     }
 }
