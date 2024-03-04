@@ -1,7 +1,7 @@
 package com.menosbel
 
 import com.menosbel.core.application.ShortenUrl
-import com.menosbel.core.domain.UrlInfoInMemoryRepository
+import com.menosbel.core.infrastructure.UrlInfoInMemoryRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

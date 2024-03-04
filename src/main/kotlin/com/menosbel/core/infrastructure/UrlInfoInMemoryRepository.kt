@@ -1,6 +1,8 @@
-package com.menosbel.core.domain
+package com.menosbel.core.infrastructure
 
-import com.menosbel.UrlInfoNotFoundError
+import com.menosbel.core.domain.UrlInfo
+import com.menosbel.core.domain.UrlInfoNotFoundError
+import com.menosbel.core.domain.UrlInfoRepository
 
 class UrlInfoInMemoryRepository: UrlInfoRepository {
     private val items = mutableListOf<UrlInfo>()
