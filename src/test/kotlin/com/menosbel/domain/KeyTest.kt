@@ -1,4 +1,4 @@
-package com.menosbel
+package com.menosbel.domain
 
 import com.menosbel.core.domain.Key
 import org.junit.jupiter.api.Assertions.assertTrue

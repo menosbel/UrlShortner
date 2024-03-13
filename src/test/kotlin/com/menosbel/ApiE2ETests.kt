@@ -4,8 +4,9 @@ import com.eclipsesource.json.JsonObject
 import com.menosbel.api.*
 import com.menosbel.api.configuration.ApiConfiguration
 import com.menosbel.core.domain.UrlInfo
-import com.menosbel.core.infrastructure.InMemoryRepositoryProvider
+import com.menosbel.core.infrastructure.Credentials
 import com.menosbel.core.infrastructure.UseCaseProvider
+import com.menosbel.core.infrastructure.jooq.JooqRepositoryProvider
 import io.restassured.RestAssured
 import io.restassured.config.RedirectConfig
 import io.restassured.module.kotlin.extensions.Given
@@ -22,8 +23,8 @@ class ApiE2ETests {
 
     private val port = 8080
     private val baseUrl = "http://localhost/"
-    private val repositoryProvider = InMemoryRepositoryProvider()
-    private val urlInfoInMemoryRepository = repositoryProvider.urlInfo()
+    private val credentials = Credentials("", "", "")
+    private val repositoryProvider = JooqRepositoryProvider(credentials)
     private val useCaseProvider = UseCaseProvider(baseUrl, repositoryProvider)
     private val apiConfiguration = ApiConfiguration(useCaseProvider, port)
     private lateinit var api: Api
@@ -68,7 +69,7 @@ class ApiE2ETests {
     fun `should redirect user to long url`() {
         val url = "https://www.google.com"
         val urlInfo = UrlInfo(url, baseUrl)
-        urlInfoInMemoryRepository.save(urlInfo)
+        repositoryProvider.urlInfo().save(urlInfo)
 
         Given {
             redirects().max(0).and().redirects().follow(false)
@@ -76,8 +77,6 @@ class ApiE2ETests {
         When {
             get("/${urlInfo.key.value}")
         } Then {
-            val headers = extract().response().headers
-            val statusCode = extract().response().statusCode
             statusCode(302)
         }
     }

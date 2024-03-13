@@ -1,4 +1,4 @@
-package com.menosbel.core.infrastructure
+package com.menosbel.core.infrastructure.inMemory
 
 import com.menosbel.core.domain.UrlInfo
 import com.menosbel.core.domain.UrlInfoNotFoundError
