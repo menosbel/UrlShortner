@@ -1,8 +1,22 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import io.github.cdimascio.dotenv.dotenv
 
 plugins {
     kotlin("jvm") version "1.7.20"
     application
+    id("nu.studer.jooq") version "6.0"
+    id("org.flywaydb.flyway") version "9.20.0"
+}
+
+buildscript {
+    dependencies {
+        classpath("io.github.cdimascio:dotenv-kotlin:6.2.2")
+    }
+}
+
+val dotenv = dotenv {
+    directory = rootProject.projectDir.absolutePath
+    ignoreIfMissing = true
 }
 
 group = "com.menosbel"
@@ -20,6 +34,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.1")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
+    implementation("org.jooq:jooq:3.19.3")
+    implementation("org.postgresql:postgresql:42.2.23")
+    jooqGenerator("org.postgresql:postgresql:42.2.23")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("io.mockk:mockk:1.13.4")
@@ -37,4 +54,51 @@ tasks.withType<KotlinCompile> {
 
 application {
     mainClass.set("MainKt")
+}
+
+flyway {
+    url = dotenv["DB_URL"]
+    user = dotenv["DB_USER"]
+    password = dotenv["DB_PASSWORD"]
+    schemas = arrayOf("public")
+    locations = arrayOf("filesystem:${project.projectDir}/src/main/resources/db")
+    cleanDisabled = false
+}
+
+jooq {
+    version.set("3.19.1")
+
+    configurations {
+        create("main") {
+            jooqConfiguration.apply {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc.apply {
+                    driver = "org.postgresql.Driver"
+                    url = dotenv["DB_URL"]
+                    user = dotenv["DB_USER"]
+                    password = dotenv["DB_PASSWORD"]
+                }
+                generator.apply {
+                    name = "org.jooq.codegen.DefaultGenerator"
+                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+                    database.apply {
+                        name = "org.jooq.meta.postgres.PostgresDatabase"
+                        inputSchema = "public"
+                        includes = ".*"
+                        excludes = ""
+                    }
+                    generate.apply {
+                        isDeprecated = false
+                        isRecords = true
+                        isImmutablePojos = true
+                        isFluentSetters = true
+                    }
+                    target.apply {
+                        packageName = "com.menosbel.UrlShortner.infrastructure.db.jooq.generated"
+                        directory = "src/main/jooq"
+                    }
+                }
+            }
+        }
+    }
 }
