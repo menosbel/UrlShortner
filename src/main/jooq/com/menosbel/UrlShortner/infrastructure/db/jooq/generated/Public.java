@@ -5,6 +5,7 @@ package com.menosbel.UrlShortner.infrastructure.db.jooq.generated;
 
 
 import com.menosbel.UrlShortner.infrastructure.db.jooq.generated.tables.FlywaySchemaHistory;
+import com.menosbel.UrlShortner.infrastructure.db.jooq.generated.tables.UrlInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,11 @@ public class Public extends SchemaImpl {
     public final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
+     * The table <code>public.url_info</code>.
+     */
+    public final UrlInfo URL_INFO = UrlInfo.URL_INFO;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -48,7 +54,8 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
-            FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY
+            FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
+            UrlInfo.URL_INFO
         );
     }
 }

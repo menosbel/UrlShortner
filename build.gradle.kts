@@ -92,6 +92,7 @@ jooq {
                         isRecords = true
                         isImmutablePojos = true
                         isFluentSetters = true
+                        isSequences = true
                     }
                     target.apply {
                         packageName = "com.menosbel.UrlShortner.infrastructure.db.jooq.generated"

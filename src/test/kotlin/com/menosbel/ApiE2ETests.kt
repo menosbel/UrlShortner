@@ -23,7 +23,7 @@ class ApiE2ETests {
 
     private val port = 8080
     private val baseUrl = "http://localhost/"
-    private val credentials = Credentials("", "", "")
+    private val credentials = Credentials("jdbc:postgresql://localhost:5433/postgres", "admin", "1234")
     private val repositoryProvider = JooqRepositoryProvider(credentials)
     private val useCaseProvider = UseCaseProvider(baseUrl, repositoryProvider)
     private val apiConfiguration = ApiConfiguration(useCaseProvider, port)
