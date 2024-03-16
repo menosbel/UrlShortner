@@ -1,10 +1,10 @@
 package com.menosbel.api
 
-import com.menosbel.api.configuration.ApiConfiguration
+import com.menosbel.api.configuration.AppConfiguration
 import com.menosbel.controllers.UrlController
 import io.javalin.Javalin
 
-class Api(private val config: ApiConfiguration) {
+class App(private val config: AppConfiguration) {
     private val httpServer = Javalin.create() { config ->
         config.showJavalinBanner = false
     }

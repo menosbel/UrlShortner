@@ -57,13 +57,28 @@ application {
 }
 
 flyway {
-    url = dotenv["DB_URL"]
+    url = "jdbc:postgresql://${dotenv["DB_HOST"]}:${dotenv["DB_PORT"]}/${dotenv["DB_NAME"]}"
     user = dotenv["DB_USER"]
     password = dotenv["DB_PASSWORD"]
     schemas = arrayOf("public")
     locations = arrayOf("filesystem:${project.projectDir}/src/main/resources/db")
     cleanDisabled = false
 }
+
+
+fun setupFlywayTestDB(task: org.flywaydb.gradle.task.AbstractFlywayTask) {
+    task.apply {
+        url = "jdbc:postgresql://${dotenv["TEST_DB_HOST"]}:${dotenv["TEST_DB_PORT"]}/${dotenv["TEST_DB_NAME"]}"
+        user = dotenv["TEST_DB_USER"]
+        password = dotenv["TEST_DB_PASSWORD"]
+        schemas = arrayOf("public")
+        locations = arrayOf("filesystem:${project.projectDir}/src/main/resources/db")
+    }
+}
+
+tasks.register<org.flywaydb.gradle.task.FlywayMigrateTask>("flywayMigrateTest") { setupFlywayTestDB(this) }
+tasks.register<org.flywaydb.gradle.task.FlywayCleanTask>("flywayCleanTest") { setupFlywayTestDB(this) }
+tasks.register<org.flywaydb.gradle.task.FlywayInfoTask>("flywayInfoTest") { setupFlywayTestDB(this) }
 
 jooq {
     version.set("3.19.1")
@@ -74,7 +89,7 @@ jooq {
                 logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
-                    url = dotenv["DB_URL"]
+                    url = "jdbc:postgresql://${dotenv["DB_HOST"]}:${dotenv["DB_PORT"]}/${dotenv["DB_NAME"]}"
                     user = dotenv["DB_USER"]
                     password = dotenv["DB_PASSWORD"]
                 }
@@ -102,4 +117,14 @@ jooq {
             }
         }
     }
+}
+
+tasks.named<nu.studer.gradle.jooq.JooqGenerate>("generateJooq") {
+    dependsOn("flywayMigrate")
+//    dependsOn("flywayMigrateTest")
+    inputs.files(fileTree("resources/db"))
+        .withPropertyName("migrations")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+    allInputsDeclared.set(true) // make jOOQ task participate in incremental builds and build caching
+    outputs.cacheIf { true }
 }

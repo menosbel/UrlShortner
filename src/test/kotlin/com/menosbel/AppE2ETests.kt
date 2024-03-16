@@ -2,11 +2,13 @@ package com.menosbel
 
 import com.eclipsesource.json.JsonObject
 import com.menosbel.api.*
-import com.menosbel.api.configuration.ApiConfiguration
+import com.menosbel.api.configuration.AppConfiguration
 import com.menosbel.core.domain.UrlInfo
-import com.menosbel.core.infrastructure.Credentials
+import com.menosbel.core.infrastructure.JdbcCredentials
+import com.menosbel.core.infrastructure.JdbcUrl
 import com.menosbel.core.infrastructure.UseCaseProvider
 import com.menosbel.core.infrastructure.jooq.JooqRepositoryProvider
+import io.github.cdimascio.dotenv.dotenv
 import io.restassured.RestAssured
 import io.restassured.config.RedirectConfig
 import io.restassured.module.kotlin.extensions.Given
@@ -19,32 +21,34 @@ import org.hamcrest.Matchers
 import org.junit.jupiter.api.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ApiE2ETests {
-
-    private val port = 8080
+class AppE2ETests {
+    private val PORT = 8080
     private val baseUrl = "http://localhost/"
-    private val credentials = Credentials("jdbc:postgresql://localhost:5433/postgres", "admin", "1234")
-    private val repositoryProvider = JooqRepositoryProvider(credentials)
+    private val dotenv = dotenv()
+    private val jdbcUrl = JdbcUrl(dotenv["TEST_DB_DRIVER"], dotenv["TEST_DB_HOST"], dotenv["TEST_DB_PORT"].toInt(), dotenv["TEST_DB_NAME"])
+    private val jdbcCredentials = JdbcCredentials(jdbcUrl, dotenv["TEST_DB_USER"]!!, dotenv["TEST_DB_PASSWORD"]!!)
+    private val repositoryProvider = JooqRepositoryProvider(jdbcCredentials)
     private val useCaseProvider = UseCaseProvider(baseUrl, repositoryProvider)
-    private val apiConfiguration = ApiConfiguration(useCaseProvider, port)
-    private lateinit var api: Api
+    private val appConfiguration = AppConfiguration(useCaseProvider, PORT)
+
+    private lateinit var app: App
 
     @BeforeAll
     fun setUp() {
-        RestAssured.port = port
+        RestAssured.port = PORT
         RestAssured.baseURI = baseUrl
         RestAssured.config.redirect(RedirectConfig().followRedirects(false))
     }
 
     @BeforeEach
-    fun startApi() {
-        api = Api(apiConfiguration)
-        api.start()
+    fun startApp() {
+        app = App(appConfiguration)
+        app.start()
     }
 
     @AfterEach
-    fun stopApi() {
-        api.stop()
+    fun stopApp() {
+        app.stop()
     }
 
     @Test

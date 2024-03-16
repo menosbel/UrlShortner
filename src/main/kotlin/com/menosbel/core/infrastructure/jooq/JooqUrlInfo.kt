@@ -4,11 +4,11 @@ import com.menosbel.UrlShortner.infrastructure.db.jooq.generated.Tables.URL_INFO
 import com.menosbel.core.domain.UrlInfo
 import com.menosbel.core.domain.UrlInfoNotFoundError
 import com.menosbel.core.domain.UrlInfoRepository
-import com.menosbel.core.infrastructure.Credentials
+import com.menosbel.core.infrastructure.JdbcCredentials
 import org.jooq.impl.DSL
 
-class JooqUrlInfo(private val credentials: Credentials) : UrlInfoRepository {
-    private fun context() = DSL.using(credentials.url, credentials.user, credentials.password)
+class JooqUrlInfo(private val jdbcCredentials: JdbcCredentials) : UrlInfoRepository {
+    private fun context() = DSL.using(jdbcCredentials.url.toString(), jdbcCredentials.user, jdbcCredentials.password)
 
     override fun findBy(key: String): UrlInfo {
         return context()
