@@ -2,10 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import io.github.cdimascio.dotenv.dotenv
 
 plugins {
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.9.20"
     application
     id("nu.studer.jooq") version "6.0"
     id("org.flywaydb.flyway") version "9.20.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 buildscript {
@@ -22,12 +23,16 @@ val dotenv = dotenv {
 group = "com.menosbel"
 version = "1.0-SNAPSHOT"
 
+project.ext {
+    set("GENERATE_JOOQ", dotenv["GENERATE_JOOQ"] == "1")
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("io.javalin:javalin:5.6.3")
+    implementation("io.javalin:javalin:6.1.3")
     implementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("com.eclipsesource.minimal-json:minimal-json:0.9.5")
     implementation("com.google.code.gson:gson:2.10.1")
@@ -36,6 +41,8 @@ dependencies {
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
     implementation("org.jooq:jooq:3.19.3")
     implementation("org.postgresql:postgresql:42.2.23")
+    implementation("org.flywaydb:flyway-core:10.8.0")
+    implementation("org.flywaydb:flyway-database-postgresql:10.4.1")
     jooqGenerator("org.postgresql:postgresql:42.2.23")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
@@ -49,11 +56,18 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "16"
+    kotlinOptions.jvmTarget = "21"
 }
 
-application {
-    mainClass.set("MainKt")
+project.setProperty("mainClassName", "com.menosbel.api.MainKt")
+
+tasks.getByName<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+    archiveFileName.set("url_shortner.jar")
+    manifest {
+        attributes(mapOf(
+            "Main-Class" to "com.menosbel.api.MainKt",
+        ))
+    }
 }
 
 flyway {
@@ -85,6 +99,7 @@ jooq {
 
     configurations {
         create("main") {
+            generateSchemaSourceOnCompilation.set(project.ext["GENERATE_JOOQ"] as Boolean)
             jooqConfiguration.apply {
                 logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc.apply {
@@ -121,7 +136,7 @@ jooq {
 
 tasks.named<nu.studer.gradle.jooq.JooqGenerate>("generateJooq") {
     dependsOn("flywayMigrate")
-//    dependsOn("flywayMigrateTest")
+    dependsOn("flywayMigrateTest")
     inputs.files(fileTree("resources/db"))
         .withPropertyName("migrations")
         .withPathSensitivity(PathSensitivity.RELATIVE)

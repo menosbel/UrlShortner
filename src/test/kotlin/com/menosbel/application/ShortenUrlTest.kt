@@ -34,6 +34,4 @@ class ShortenUrlTest {
         assertThat(urlInfo.shortUrl).contains(baseUrl)
         assertThat(urlInfo.key.value.length).isEqualTo(keyLength)
     }
-
-
 }

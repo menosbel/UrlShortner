@@ -22,6 +22,6 @@ class App(private val config: AppConfiguration) {
     }
 
     fun stop() {
-        httpServer.close()
+        httpServer.stop()
     }
 }

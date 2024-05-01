@@ -89,7 +89,7 @@ class AppE2ETests {
     fun `should fail if key is not found`() {
         val someKey = "kYhNk6aH"
 
-            RestAssured.registerParser("text/plain", Parser.TEXT)
+        RestAssured.registerParser("text/plain", Parser.TEXT)
 
         When {
             get("/${someKey}")
