@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  url_shortner_api:
+    container_name: url_shortner_api
+    image: url_shortner_api_image
+    build: .
+    ports:
+      - 6060:6060
+    environment:
+      - GENERATE_JOOQ=0
+      - PORT=6060
+      - BASE_URL="http://localhost:6060/"
+      - DB_DRIVER=postgresql
+      - DB_NAME=url-shortner
+      - DB_HOST=url_shortner_pg
+      - DB_USER=postgres
+      - DB_PASSWORD=1234
+      - DB_PORT=5432
+      - TEST_DB_DRIVER=postgresql
+      - TEST_DB_NAME=url_shortner_pg_test
+      - TEST_DB_HOST=url-shortner-test
+      - TEST_DB_USER=postgres
+      - TEST_DB_PASSWORD=1234
+      - TEST_DB_PORT=5432
+    depends_on:
+      - url_shortner_pg
+      - url_shortner_pg_test
+  url_shortner_pg_test:
+    container_name: url_shortner_pg_test
+    image: postgres:latest
+    ports:
+      - 5533:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: url-shortner-test
+    volumes:
+      - url_shortner_pg_test_data:/var/lib/postgresql/data
+  url_shortner_pg:
+    container_name: url_shortner_pg
+    image: postgres:latest
+    ports:
+      - 5532:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: url-shortner
+    volumes:
+      - url_shortner_pg_data:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+volumes:
+  url_shortner_pg_data:
+  url_shortner_pg_test_data:
