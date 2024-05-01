@@ -6,6 +6,7 @@ import com.menosbel.core.infrastructure.JdbcUrl
 import com.menosbel.core.infrastructure.UseCaseProvider
 import com.menosbel.core.infrastructure.jooq.JooqRepositoryProvider
 import io.github.cdimascio.dotenv.dotenv
+import org.flywaydb.core.Flyway;
 
 fun main() {
     val dotenv = dotenv()
@@ -19,6 +20,13 @@ fun main() {
     val useCaseProvider = UseCaseProvider(baseUrl, repositoryProvider)
 
     val app = App(AppConfiguration(useCaseProvider, PORT))
+    val root = System.getProperty("user.dir")
+    val flyway = Flyway
+        .configure()
+        .dataSource("jdbc:postgresql://localhost:5532/url-shortner", "postgres", "1234")
+        .locations("filesystem:${root}/src/main/resources/db")
+        .load()
+    flyway.migrate()
 
     app.start()
 }
