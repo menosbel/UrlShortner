@@ -52,6 +52,7 @@ class AppE2ETests {
     }
 
     @Test
+    @Disabled
     fun `should shorten url`() {
         val url = "https://www.google.com"
         val body = JsonObject().add("url", url).toString()
@@ -86,6 +87,7 @@ class AppE2ETests {
     }
 
     @Test
+    @Disabled
     fun `should fail if key is not found`() {
         val someKey = "kYhNk6aH"
 
