@@ -11,10 +11,8 @@
 .LSOverride
 Icon?
 
-### Gradle ###
 build/
-.gradle/
-gradle/
+.gradle
 
 # Folder config file
 [Dd]esktop.ini
