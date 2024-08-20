@@ -29,6 +29,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.7.0
+          gradle-version: 8.7
       - name: Build with Gradle
         run: gradle --parallel --build-cache -Dorg.gradle.daemon=false shadowJar
