@@ -143,3 +143,17 @@ tasks.named<nu.studer.gradle.jooq.JooqGenerate>("generateJooq") {
     allInputsDeclared.set(true) // make jOOQ task participate in incremental builds and build caching
     outputs.cacheIf { true }
 }
+
+tasks.withType<Test> {
+    useJUnitPlatform { excludeTags("slow") }
+}
+
+tasks.register<Test>("slowTest") {
+    group = "verification"
+    useJUnitPlatform { includeTags("slow") }
+}
+
+tasks.register<Test>("allTests") {
+    group = "verification"
+    useJUnitPlatform { }
+}

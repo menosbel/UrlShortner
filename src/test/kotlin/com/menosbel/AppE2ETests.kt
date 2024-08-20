@@ -21,6 +21,7 @@ import org.hamcrest.Matchers
 import org.junit.jupiter.api.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Tag("slow")
 class AppE2ETests {
     private val PORT = 8080
     private val baseUrl = "http://localhost/"
@@ -52,7 +53,6 @@ class AppE2ETests {
     }
 
     @Test
-    @Disabled
     fun `should shorten url`() {
         val url = "https://www.google.com"
         val body = JsonObject().add("url", url).toString()
@@ -70,7 +70,6 @@ class AppE2ETests {
     }
 
     @Test
-    @Disabled
     fun `should redirect user to long url`() {
         val url = "https://www.google.com"
         val urlInfo = UrlInfo(url, baseUrl)
@@ -87,7 +86,6 @@ class AppE2ETests {
     }
 
     @Test
-    @Disabled
     fun `should fail if key is not found`() {
         val someKey = "kYhNk6aH"
 
