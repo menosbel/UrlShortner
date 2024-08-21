@@ -5,17 +5,16 @@ import com.menosbel.core.infrastructure.JdbcCredentials
 import com.menosbel.core.infrastructure.JdbcUrl
 import com.menosbel.core.infrastructure.UseCaseProvider
 import com.menosbel.core.infrastructure.jooq.JooqRepositoryProvider
-import io.github.cdimascio.dotenv.Dotenv
-import io.github.cdimascio.dotenv.dotenv
+import com.menosbel.utils.Env
 import org.flywaydb.core.Flyway;
 
 fun main() {
-    val dotenv = dotenv()
-    val port = (dotenv["PORT"] ?: "8080").toInt()
-    val baseUrl = buildBaseUrl(dotenv, port)
+    val env = Env()
+    val port = (env.getVariable("PORT") ?: "8080").toInt()
+    val baseUrl = buildBaseUrl(env, port)
 
-    val jdbcUrl = buildJdbcUrl(dotenv)
-    val repositoryProvider = buildJooqRepositoryProvider(dotenv, jdbcUrl)
+    val jdbcUrl = buildJdbcUrl(env)
+    val repositoryProvider = buildJooqRepositoryProvider(env, jdbcUrl)
     val useCaseProvider = UseCaseProvider(baseUrl, repositoryProvider)
 
     val app = App(AppConfiguration(useCaseProvider, port))
@@ -34,20 +33,20 @@ private fun runFlywayMigrations(jdbcUrl: JdbcUrl) {
     flyway.migrate()
 }
 
-private fun buildJooqRepositoryProvider(dotenv: Dotenv, jdbcUrl: JdbcUrl): JooqRepositoryProvider {
-    val dbUser = dotenv["DB_USER"]!!
-    val dbPassword = dotenv["DB_PASSWORD"]!!
+private fun buildJooqRepositoryProvider(env: Env, jdbcUrl: JdbcUrl): JooqRepositoryProvider {
+    val dbUser = env.getVariableOrThrow("DB_USER")
+    val dbPassword = env.getVariableOrThrow("DB_PASSWORD")
     val jdbcCredentials = JdbcCredentials(jdbcUrl, dbUser, dbPassword)
     return JooqRepositoryProvider(jdbcCredentials)
 }
 
-private fun buildJdbcUrl(dotenv: Dotenv): JdbcUrl {
-    val dbDriver = dotenv["DB_DRIVER"]
-    val dbHost = dotenv["DB_HOST"]
-    val dbPort = dotenv["DB_PORT"].toInt()
-    val dbName = dotenv["DB_NAME"]
+private fun buildJdbcUrl(env: Env): JdbcUrl {
+    val dbDriver = env.getVariableOrThrow("DB_DRIVER")
+    val dbHost = env.getVariableOrThrow("DB_HOST")
+    val dbPort = env.getVariableOrThrow("DB_PORT").toInt()
+    val dbName = env.getVariableOrThrow("DB_NAME")
     return JdbcUrl(dbDriver, dbHost, dbPort, dbName)
 }
 
-private fun buildBaseUrl(dotenv: Dotenv, port: Int) = dotenv["BASE_URL"] ?: "http://localhost:${port}/"
+private fun buildBaseUrl(env: Env, port: Int) = env.getVariable("BASE_URL") ?: "http://localhost:${port}/"
 

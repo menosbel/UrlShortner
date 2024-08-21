@@ -8,7 +8,7 @@ import com.menosbel.core.infrastructure.JdbcCredentials
 import com.menosbel.core.infrastructure.JdbcUrl
 import com.menosbel.core.infrastructure.UseCaseProvider
 import com.menosbel.core.infrastructure.jooq.JooqRepositoryProvider
-import io.github.cdimascio.dotenv.dotenv
+import com.menosbel.utils.Env
 import io.restassured.RestAssured
 import io.restassured.config.RedirectConfig
 import io.restassured.module.kotlin.extensions.Given
@@ -25,9 +25,9 @@ import org.junit.jupiter.api.*
 class AppE2ETests {
     private val PORT = 8080
     private val baseUrl = "http://localhost/"
-    private val dotenv = dotenv()
-    private val jdbcUrl = JdbcUrl(dotenv["TEST_DB_DRIVER"], dotenv["TEST_DB_HOST"], dotenv["TEST_DB_PORT"].toInt(), dotenv["TEST_DB_NAME"])
-    private val jdbcCredentials = JdbcCredentials(jdbcUrl, dotenv["TEST_DB_USER"]!!, dotenv["TEST_DB_PASSWORD"]!!)
+    private val env = Env()
+    private val jdbcUrl = JdbcUrl(env.getVariableOrThrow("TEST_DB_DRIVER"), env.getVariableOrThrow("TEST_DB_HOST"), env.getVariableOrThrow("TEST_DB_PORT").toInt(), env.getVariableOrThrow("TEST_DB_NAME"))
+    private val jdbcCredentials = JdbcCredentials(jdbcUrl, env.getVariableOrThrow("TEST_DB_USER"), env.getVariableOrThrow("TEST_DB_PASSWORD"))
     private val repositoryProvider = JooqRepositoryProvider(jdbcCredentials)
     private val useCaseProvider = UseCaseProvider(baseUrl, repositoryProvider)
     private val appConfiguration = AppConfiguration(useCaseProvider, PORT)
