@@ -157,3 +157,8 @@ tasks.register<Test>("allTests") {
     group = "verification"
     useJUnitPlatform { }
 }
+
+tasks.withType<Test>().configureEach {
+    reports.html.required.set(false)
+    reports.junitXml.required.set(false)
+}

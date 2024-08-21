@@ -11,7 +11,7 @@ class KeyTest {
 
         val randoms = List(10_000) { Key() }
 
-        assertTrue { randoms.all { it.value.length == keyLength }}
+        assertTrue { randoms.all { it.value.length == 7 }}
     }
 
     @Test
