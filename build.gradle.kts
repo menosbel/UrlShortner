@@ -145,17 +145,18 @@ tasks.named<nu.studer.gradle.jooq.JooqGenerate>("generateJooq") {
 }
 
 tasks.withType<Test> {
+    useJUnitPlatform {  }
+}
+
+tasks.register<Test>("quickTest") {
+    group = "verification"
     useJUnitPlatform { excludeTags("slow") }
 }
+
 
 tasks.register<Test>("slowTest") {
     group = "verification"
     useJUnitPlatform { includeTags("slow") }
-}
-
-tasks.register<Test>("allTests") {
-    group = "verification"
-    useJUnitPlatform { }
 }
 
 tasks.withType<Test>().configureEach {

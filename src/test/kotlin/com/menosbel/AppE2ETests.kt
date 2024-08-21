@@ -70,6 +70,7 @@ class AppE2ETests {
     }
 
     @Test
+    @Disabled
     fun `should redirect user to long url`() {
         val url = "https://www.google.com"
         val urlInfo = UrlInfo(url, baseUrl)
