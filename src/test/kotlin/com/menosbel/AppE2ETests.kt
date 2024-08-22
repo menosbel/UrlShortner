@@ -8,7 +8,6 @@ import com.menosbel.core.infrastructure.JdbcCredentials
 import com.menosbel.core.infrastructure.JdbcUrl
 import com.menosbel.core.infrastructure.UseCaseProvider
 import com.menosbel.core.infrastructure.jooq.JooqRepositoryProvider
-import com.menosbel.utils.Env
 import io.restassured.RestAssured
 import io.restassured.config.RedirectConfig
 import io.restassured.module.kotlin.extensions.Given

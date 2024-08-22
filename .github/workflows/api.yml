@@ -60,16 +60,16 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 1234
         ports:
-          - 5432:5432
+          - 5533:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     env:
-      DB_DRIVER: postgresql
       TEST_DB_DRIVER: postgresql
       TEST_DB_HOST: localhost
-      TEST_DB_NAME: eroman-ci
+      TEST_DB_NAME: url-shortner-ci
       TEST_DB_USER: postgres
       TEST_DB_PASSWORD: 1234
-      TEST_DB_PORT: 5432
+      TEST_DB_PORT: 5533
+      BASE_URL: http://somebaseurl:6060/
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

@@ -1,4 +1,4 @@
-package com.menosbel.utils
+package com.menosbel
 
 import io.github.cdimascio.dotenv.dotenv
 

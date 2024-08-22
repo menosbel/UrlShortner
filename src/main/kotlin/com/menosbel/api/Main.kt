@@ -1,11 +1,11 @@
 package com.menosbel.api
 
+import com.menosbel.Env
 import com.menosbel.api.configuration.AppConfiguration
 import com.menosbel.core.infrastructure.JdbcCredentials
 import com.menosbel.core.infrastructure.JdbcUrl
 import com.menosbel.core.infrastructure.UseCaseProvider
 import com.menosbel.core.infrastructure.jooq.JooqRepositoryProvider
-import com.menosbel.utils.Env
 import org.flywaydb.core.Flyway;
 
 fun main() {

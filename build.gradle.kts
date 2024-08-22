@@ -20,11 +20,12 @@ val dotenv = dotenv {
     ignoreIfMissing = true
 }
 
+
 group = "com.menosbel"
 version = "1.0-SNAPSHOT"
 
 project.ext {
-    set("GENERATE_JOOQ", dotenv["GENERATE_JOOQ"] == "1")
+    set("GENERATE_JOOQ", System.getenv()["GENERATE_JOOQ"] == "1")
 }
 
 repositories {
@@ -51,6 +52,11 @@ dependencies {
     testImplementation("io.rest-assured:kotlin-extensions:5.3.0")
 }
 
+fun getVariableOrThrow(key: String): String {
+    val variable = System.getenv(key) ?: dotenv[key]
+    if (variable.isNullOrEmpty()) throw Exception("Variable de entorno $key no configurada")
+    else return variable
+}
 tasks.test {
     useJUnitPlatform()
 }
@@ -71,9 +77,9 @@ tasks.getByName<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("sha
 }
 
 flyway {
-    url = "jdbc:postgresql://${dotenv["DB_HOST"]}:${dotenv["DB_PORT"]}/${dotenv["DB_NAME"]}"
-    user = dotenv["DB_USER"]
-    password = dotenv["DB_PASSWORD"]
+    url = "jdbc:postgresql://${getVariableOrThrow("DB_HOST")}:${getVariableOrThrow("DB_PORT")}/${getVariableOrThrow("DB_NAME")}"
+    user = getVariableOrThrow("DB_USER")
+    password = getVariableOrThrow("DB_PASSWORD")
     schemas = arrayOf("public")
     locations = arrayOf("filesystem:${project.projectDir}/src/main/resources/db")
     cleanDisabled = false
@@ -82,9 +88,9 @@ flyway {
 
 fun setupFlywayTestDB(task: org.flywaydb.gradle.task.AbstractFlywayTask) {
     task.apply {
-        url = "jdbc:postgresql://${dotenv["TEST_DB_HOST"]}:${dotenv["TEST_DB_PORT"]}/${dotenv["TEST_DB_NAME"]}"
-        user = dotenv["TEST_DB_USER"]
-        password = dotenv["TEST_DB_PASSWORD"]
+        url = "jdbc:postgresql://${getVariableOrThrow("TEST_DB_HOST")}:${getVariableOrThrow("TEST_DB_PORT")}/${getVariableOrThrow("TEST_DB_NAME")}"
+        user = getVariableOrThrow("TEST_DB_USER")
+        password = getVariableOrThrow("TEST_DB_PASSWORD")
         schemas = arrayOf("public")
         locations = arrayOf("filesystem:${project.projectDir}/src/main/resources/db")
     }
@@ -104,9 +110,9 @@ jooq {
                 logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
-                    url = "jdbc:postgresql://${dotenv["DB_HOST"]}:${dotenv["DB_PORT"]}/${dotenv["DB_NAME"]}"
-                    user = dotenv["DB_USER"]
-                    password = dotenv["DB_PASSWORD"]
+                    url = "jdbc:postgresql://${getVariableOrThrow("DB_HOST")}:${getVariableOrThrow("DB_PORT")}/${getVariableOrThrow("DB_NAME")}"
+                    user = getVariableOrThrow("DB_USER")
+                    password = getVariableOrThrow("DB_PASSWORD")
                 }
                 generator.apply {
                     name = "org.jooq.codegen.DefaultGenerator"
