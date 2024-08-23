@@ -52,11 +52,8 @@ dependencies {
     testImplementation("io.rest-assured:kotlin-extensions:5.3.0")
 }
 
-fun getVariableOrThrow(key: String): String {
-    val variable = System.getenv(key) ?: dotenv[key]
-    if (variable.isNullOrEmpty()) throw Exception("Variable de entorno $key no configurada")
-    else return variable
-}
+fun getVariableOrThrow(key: String) = System.getenv(key) ?: dotenv[key]
+
 tasks.test {
     useJUnitPlatform()
 }
