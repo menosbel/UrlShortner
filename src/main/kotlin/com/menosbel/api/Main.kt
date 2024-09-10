@@ -6,7 +6,7 @@ import com.menosbel.core.infrastructure.JdbcCredentials
 import com.menosbel.core.infrastructure.JdbcUrl
 import com.menosbel.core.infrastructure.UseCaseProvider
 import com.menosbel.core.infrastructure.jooq.JooqRepositoryProvider
-import org.flywaydb.core.Flyway;
+import org.flywaydb.core.Flyway
 
 fun main() {
     val env = Env()
@@ -18,16 +18,16 @@ fun main() {
     val useCaseProvider = UseCaseProvider(baseUrl, repositoryProvider)
 
     val app = App(AppConfiguration(useCaseProvider, port))
-    runFlywayMigrations(jdbcUrl)
+    runFlywayMigrations(env, jdbcUrl)
 
     app.start()
 }
 
-private fun runFlywayMigrations(jdbcUrl: JdbcUrl) {
+private fun runFlywayMigrations(env: Env, jdbcUrl: JdbcUrl) {
     val root = System.getProperty("user.dir")
     val flyway = Flyway
         .configure()
-        .dataSource(jdbcUrl.toString(), "postgres", "1234")
+        .dataSource(jdbcUrl.toString(), env.getVariableOrThrow("DB_USER"), env.getVariableOrThrow("DB_PASSWORD"))
         .locations("filesystem:${root}/src/main/resources/db")
         .load()
     flyway.migrate()
