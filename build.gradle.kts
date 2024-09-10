@@ -20,12 +20,13 @@ val dotenv = dotenv {
     ignoreIfMissing = true
 }
 
+fun getVariableOrThrow(key: String) = System.getenv(key) ?: dotenv[key]
 
 group = "com.menosbel"
 version = "1.0-SNAPSHOT"
 
 project.ext {
-    set("GENERATE_JOOQ", System.getenv()["GENERATE_JOOQ"] == "1")
+    set("GENERATE_JOOQ", getVariableOrThrow("GENERATE_JOOQ") == "1")
 }
 
 repositories {
@@ -51,8 +52,6 @@ dependencies {
     testImplementation("io.rest-assured:rest-assured:5.3.0")
     testImplementation("io.rest-assured:kotlin-extensions:5.3.0")
 }
-
-fun getVariableOrThrow(key: String) = System.getenv(key) ?: dotenv[key]
 
 tasks.test {
     useJUnitPlatform()
