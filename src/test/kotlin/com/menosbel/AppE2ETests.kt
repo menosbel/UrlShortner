@@ -14,6 +14,7 @@ import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import io.restassured.parsing.Parser
+import org.flywaydb.core.Flyway
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Matchers
@@ -33,11 +34,23 @@ class AppE2ETests {
 
     private lateinit var app: App
 
+    private fun runFlywayMigrationsTest(env: Env, jdbcUrl: JdbcUrl) {
+        val root = System.getProperty("user.dir")
+        val flyway = Flyway
+            .configure()
+            .dataSource(jdbcUrl.toString(), env.getVariableOrThrow("TEST_DB_USER"), env.getVariableOrThrow("TEST_DB_PASSWORD"))
+            .locations("filesystem:${root}/src/main/resources/db")
+            .load()
+        flyway.migrate()
+    }
+
     @BeforeAll
     fun setUp() {
         RestAssured.port = PORT
         RestAssured.baseURI = baseUrl
         RestAssured.config.redirect(RedirectConfig().followRedirects(false))
+
+        runFlywayMigrationsTest(env, jdbcUrl)
     }
 
     @BeforeEach
